@@ -205,6 +205,7 @@
   },
   "active": "c595911c55331a0b",
   "lastOpenFiles": [
+    "jarvis-brain/dashboard/next.config.js",
     "jarvis-brain/dashboard/tsconfig.json",
     "package.json",
     "railway.json",
@@ -215,7 +216,6 @@
     "jarvis-brain/dashboard/lib/supabase.ts",
     "jarvis-brain/dashboard/components/TaskQueuePanel.tsx",
     "jarvis-brain/dashboard/components/PulseStrip.tsx",
-    "jarvis-brain/dashboard/components/CommandInput.tsx",
     "jarvis-brain/README.md",
     "Suits/Suits Master.md",
     "Source AI/Source AI Master.md",

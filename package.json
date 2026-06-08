@@ -1,0 +1,19 @@
+{
+  "name": "jarvis-brain",
+  "version": "1.0.0",
+  "description": "Autonomous business operating system — agents, voice, learning loop",
+  "type": "module",
+  "scripts": {
+    "start": "node scheduler.js",
+    "cycle": "node scheduler.js --once",
+    "learn": "node scheduler.js --learn"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.28.0",
+    "@supabase/supabase-js": "^2.47.0",
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

@@ -31,14 +31,10 @@
             "id": "c595911c55331a0b",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Brain/Sovereign Master.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Sovereign Master"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
             }
           }
         ]
@@ -114,7 +110,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Brain/Sovereign Master.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -124,7 +119,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for Sovereign Master"
+              "title": "Backlinks"
             }
           },
           {
@@ -133,12 +128,11 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Brain/Sovereign Master.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Sovereign Master"
+              "title": "Outgoing links"
             }
           },
           {
@@ -176,13 +170,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Brain/Sovereign Master.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Sovereign Master"
+              "title": "Outline"
             }
           }
         ]
@@ -205,6 +198,8 @@
   },
   "active": "c595911c55331a0b",
   "lastOpenFiles": [
+    "jarvis-brain/dashboard/package.json",
+    "Brain/Sovereign Master.md",
     "jarvis-brain/dashboard/next.config.js",
     "jarvis-brain/dashboard/tsconfig.json",
     "package.json",
@@ -215,12 +210,10 @@
     "jarvis-brain/dashboard/app/api/route",
     "jarvis-brain/dashboard/lib/supabase.ts",
     "jarvis-brain/dashboard/components/TaskQueuePanel.tsx",
-    "jarvis-brain/dashboard/components/PulseStrip.tsx",
     "jarvis-brain/README.md",
     "Suits/Suits Master.md",
     "Source AI/Source AI Master.md",
     "Personal Brand/Personal Brand Master.md",
-    "Brain/Sovereign Master.md",
     "Welcome.md"
   ]
 }

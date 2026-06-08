@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BRAIN — Command Center (Preview)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0a0a0c; --ink-soft: #101015; --panel: #15151c; --border: #26262f;
+    --gold: #d4af37; --gold-bright: #f5d76e; --gold-dim: #8a7320;
+    --idle: #5b5b6b; --finding: #4a9eff; --working: #d4af37;
+    --blocked: #ff9d4a; --error: #ff5a5a; --ok: #4ade80;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--ink); color: #e8e8ec;
+    font-family: 'Outfit', sans-serif; -webkit-font-smoothing: antialiased;
+    min-height: 100vh; position: relative; overflow-x: hidden;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(circle at 50% 0%, rgba(212,175,55,0.06), transparent 55%);
+  }
+  main { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; padding: 40px 48px; }
+  .display { font-family: 'Fraunces', serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 40px; }
+  h1 { font-family: 'Fraunces', serif; font-size: 52px; color: var(--gold-bright); letter-spacing: -1px; line-height: 1; }
+  .subtitle { color: rgba(255,255,255,0.4); font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3em; margin-top: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px currentColor; }
+  .dot.live { animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  .section-label { font-family:'Fraunces',serif; font-size:13px; text-transform:uppercase; letter-spacing:0.2em; color:rgba(255,255,255,0.5); margin-bottom:16px; }
+  .pulse-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:var(--border); margin-bottom:32px; }
+  .pulse-cell { background:rgba(21,21,28,0.8); padding:18px; text-align:center; }
+  .pulse-val { font-family:'Fraunces',serif; font-size:30px; }
+  .pulse-label { font-size:10px; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,0.4); font-family:'JetBrains Mono',monospace; margin-top:4px; }
+  .command { border-radius:12px; border:1px solid rgba(212,175,55,0.2); background:linear-gradient(to bottom, rgba(212,175,55,0.06), transparent); padding:20px; box-shadow:0 0 20px rgba(212,175,55,0.15); margin-bottom:32px; }
+  .command label { font-size:11px; text-transform:uppercase; letter-spacing:0.2em; color:var(--gold-dim); font-family:'JetBrains Mono',monospace; }
+  .command-row { display:flex; gap:8px; margin-top:12px; }
+  .command input { flex:1; background:rgba(10,10,12,0.6); border:1px solid var(--border); border-radius:8px; padding:12px 16px; font-size:14px; color:rgba(255,255,255,0.9); font-family:'Outfit',sans-serif; }
+  .command input:focus { outline:none; border-color:rgba(212,175,55,0.4); }
+  .command input::placeholder { color:rgba(255,255,255,0.25); }
+  .command button { border-radius:8px; background:var(--gold); color:var(--ink); font-weight:600; padding:0 24px; font-size:14px; border:none; cursor:pointer; transition:background 0.15s; }
+  .command button:hover { background:var(--gold-bright); }
+  .agent-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+  .agent-card { border-radius:12px; border:1px solid var(--border); background:rgba(21,21,28,0.6); padding:20px; animation:fadeUp 0.5s ease-out forwards; }
+  .agent-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .agent-name { font-size:11px; text-transform:uppercase; letter-spacing:0.15em; color:var(--gold-dim); font-family:'JetBrains Mono',monospace; }
+  .agent-status { font-family:'Fraunces',serif; font-size:24px; color:var(--gold-bright); text-transform:capitalize; }
+  .agent-detail { font-size:11px; color:rgba(255,255,255,0.4); font-family:'JetBrains Mono',monospace; margin-top:4px; height:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .panel { border-radius:12px; border:1px solid var(--border); background:rgba(21,21,28,0.6); padding:20px; }
+  .panel h2 { font-family:'Fraunces',serif; font-size:18px; color:rgba(255,255,255,0.9); margin-bottom:16px; display:flex; align-items:center; gap:8px; font-weight:600; }
+  .task { display:flex; align-items:center; justify-content:space-between; border-radius:8px; border:1px solid rgba(38,38,47,0.6); padding:10px 12px; margin-bottom:8px; transition:border-color 0.15s; }
+  .task:hover { border-color:rgba(212,175,55,0.2); }
+  .task-type { font-size:14px; color:rgba(255,255,255,0.8); font-family:'JetBrains Mono',monospace; }
+  .task-agent { font-size:11px; color:rgba(255,255,255,0.4); }
+  .badge { font-size:10px; text-transform:uppercase; letter-spacing:0.05em; padding:4px 8px; border-radius:6px; border:1px solid; font-family:'JetBrains Mono',monospace; white-space:nowrap; }
+  .b-queued { color:var(--finding); border-color:rgba(74,158,255,0.3); background:rgba(74,158,255,0.1); }
+  .b-claimed { color:var(--gold); border-color:rgba(212,175,55,0.3); background:rgba(212,175,55,0.1); }
+  .b-completed { color:var(--ok); border-color:rgba(74,222,128,0.3); background:rgba(74,222,128,0.1); }
+  .b-pending { color:var(--blocked); border-color:rgba(255,157,74,0.3); background:rgba(255,157,74,0.1); }
+  .approvals { border-color:rgba(255,157,74,0.3); background:rgba(255,157,74,0.04); }
+  .approvals h2 { color:var(--blocked); }
+  .approval-sub { font-size:11px; color:rgba(255,255,255,0.4); font-family:'JetBrains Mono',monospace; margin-top:-12px; margin-bottom:16px; }
+  .approval-item { border-radius:8px; border:1px solid var(--border); background:rgba(10,10,12,0.4); padding:12px; margin-bottom:12px; }
+  .approval-meta { font-size:11px; font-family:'JetBrains Mono',monospace; color:var(--gold-dim); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; }
+  .approval-text { font-size:14px; color:rgba(255,255,255,0.7); line-height:1.5; margin-bottom:12px; }
+  .approval-actions { display:flex; gap:8px; }
+  .btn-approve { flex:1; border-radius:6px; background:rgba(212,175,55,0.9); color:var(--ink); font-size:12px; font-weight:600; padding:8px; border:none; cursor:pointer; }
+  .btn-approve:hover { background:var(--gold); }
+  .btn-reject { border-radius:6px; border:1px solid var(--border); background:none; color:rgba(255,255,255,0.6); font-size:12px; padding:8px 16px; cursor:pointer; }
+  .btn-reject:hover { border-color:rgba(255,90,90,0.5); color:var(--error); }
+  footer { margin-top:48px; padding-top:24px; border-top:1px solid var(--border); text-align:center; }
+  footer p { color:rgba(255,255,255,0.2); font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.15em; }
+  .preview-tag { position:fixed; top:12px; right:12px; z-index:10; background:rgba(212,175,55,0.15); border:1px solid rgba(212,175,55,0.3); color:var(--gold-bright); font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.1em; padding:6px 12px; border-radius:6px; }
+</style>
+</head>
+<body>
+<div class="preview-tag">Preview · Mock Data</div>
+<main>
+  <header>
+    <div>
+      <h1>BRAIN</h1>
+      <p class="subtitle">Autonomous Business OS · Johnny Berry Jr.</p>
+    </div>
+    <div style="text-align:right;">
+      <span class="dot live" style="color:var(--ok);"></span>
+      <span class="mono" style="margin-left:8px; font-size:11px; color:var(--ok); text-transform:uppercase; letter-spacing:0.05em;">Online</span>
+    </div>
+  </header>
+
+  <div class="pulse-strip">
+    <div class="pulse-cell"><div class="pulse-val" style="color:var(--gold-bright);">47</div><div class="pulse-label">Tasks / 24h</div></div>
+    <div class="pulse-cell"><div class="pulse-val">12</div><div class="pulse-label">Suit Drafts</div></div>
+    <div class="pulse-cell"><div class="pulse-val">8</div><div class="pulse-label">Scripts</div></div>
+    <div class="pulse-cell"><div class="pulse-val" style="color:var(--error);">1</div><div class="pulse-label">Failures</div></div>
+  </div>
+
+  <div class="command">
+    <label>Command the Brain</label>
+    <div class="command-row">
+      <input placeholder='e.g. "Draft follow-ups for my hot suit prospects"' />
+      <button>Send</button>
+    </div>
+  </div>
+
+  <div class="section-label">Agents</div>
+  <div class="agent-grid">
+    <div class="agent-card" style="animation-delay:0ms;">
+      <div class="agent-top"><span class="agent-name">Custom Suits</span><span class="dot live" style="color:var(--working);"></span></div>
+      <div class="agent-status">Working</div>
+      <div class="agent-detail">reengage_prospect</div>
+    </div>
+    <div class="agent-card" style="animation-delay:80ms;">
+      <div class="agent-top"><span class="agent-name">Source AI</span><span class="dot live" style="color:var(--finding);"></span></div>
+      <div class="agent-status">Finding</div>
+      <div class="agent-detail">scanning prospects</div>
+    </div>
+    <div class="agent-card" style="animation-delay:160ms;">
+      <div class="agent-top"><span class="agent-name">Content</span><span class="dot" style="color:var(--idle);"></span></div>
+      <div class="agent-status">Idle</div>
+      <div class="agent-detail">—</div>
+    </div>
+    <div class="agent-card" style="animation-delay:240ms;">
+      <div class="agent-top"><span class="agent-name">Data &amp; Reports</span><span class="dot live" style="color:var(--working);"></span></div>
+      <div class="agent-status">Working</div>
+      <div class="agent-detail">weekly_report</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="panel">
+      <h2><span class="dot live" style="color:var(--gold);"></span>Task Queue</h2>
+      <div class="task"><div><div class="task-type">weekly_report</div><div class="task-agent">data</div></div><span class="badge b-claimed">claimed</span></div>
+      <div class="task"><div><div class="task-type">reengage_prospect</div><div class="task-agent">suit_business</div></div><span class="badge b-claimed">claimed</span></div>
+      <div class="task"><div><div class="task-type">replenish_scripts</div><div class="task-agent">content</div></div><span class="badge b-queued">queued</span></div>
+      <div class="task"><div><div class="task-type">qualify_prospects</div><div class="task-agent">source_ai</div></div><span class="badge b-completed">completed</span></div>
+      <div class="task"><div><div class="task-type">fabric_announcement</div><div class="task-agent">suit_business</div></div><span class="badge b-pending">pending approval</span></div>
+      <div class="task"><div><div class="task-type">daily_pulse</div><div class="task-agent">data</div></div><span class="badge b-completed">completed</span></div>
+    </div>
+
+    <div class="panel approvals">
+      <h2>Awaiting Your Approval</h2>
+      <p class="approval-sub">Side-effectful actions (messages, posts) wait here.</p>
+      <div class="approval-item">
+        <div class="approval-meta">suit_business · reengage_prospect</div>
+        <div class="approval-text">Hey Marcus — those navy Italian wools we talked about finally landed. Thought of your fall lineup right away. Want to grab 15 min this week to take a look?</div>
+        <div class="approval-actions"><button class="btn-approve">Approve &amp; Send</button><button class="btn-reject">Reject</button></div>
+      </div>
+      <div class="approval-item">
+        <div class="approval-meta">source_ai · draft_outreach</div>
+        <div class="approval-text">Saw the new location for Brickell Dental — congrats. A site that actually books appointments while you sleep would pay for itself fast. Worth a quick call?</div>
+        <div class="approval-actions"><button class="btn-approve">Approve &amp; Send</button><button class="btn-reject">Reject</button></div>
+      </div>
+    </div>
+  </div>
+
+  <footer><p>Powered by Claude · Supabase · Vapi</p></footer>
+</main>
+</body>
+</html>
